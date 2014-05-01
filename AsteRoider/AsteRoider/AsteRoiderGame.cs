@@ -19,14 +19,17 @@ namespace AsteRoider
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+
         Camera camera;
         Background background;
         BasicEffect effect;
+        
+        private Ship ship;
 
         public AsteRoiderGame()
         {
             graphics = new GraphicsDeviceManager(this);
-            Content.RootDirectory = "Content";
+            Content.RootDirectory = "Content"; 
         }
 
         /// <summary>
@@ -38,8 +41,9 @@ namespace AsteRoider
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            camera = new Camera(new Vector3(3.5f, 0.5f, 0.5f), 0, GraphicsDevice.Viewport.AspectRatio, 0.05f, 100f);
+            camera = new Camera(new Vector3(3.5f, 1.5f, 1.5f), 0, GraphicsDevice.Viewport.AspectRatio, 0.05f, 100f);
             effect = new BasicEffect(GraphicsDevice);
+            GraphicsDevice.SamplerStates[0] = SamplerState.LinearClamp;
             background = new Background(GraphicsDevice);
             base.Initialize();
         }
@@ -52,6 +56,10 @@ namespace AsteRoider
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            
+            ship = new Ship(
+this.GraphicsDevice,
+Content.Load<Texture2D>("textur"));
 
             // TODO: use this.Content to load your game content here
         }
@@ -75,7 +83,7 @@ namespace AsteRoider
             // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
-
+            
             // TODO: Add your update logic here
 
             base.Update(gameTime);
@@ -88,7 +96,8 @@ namespace AsteRoider
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Gray);
-            background.Draw(camera, effect);
+            //background.Draw(camera, effect);
+            ship.Draw(camera, effect);
             // TODO: Add your drawing code here
 
             base.Draw(gameTime);
