@@ -29,6 +29,7 @@ namespace AsteRoider
         public AsteRoiderGame()
         {
             graphics = new GraphicsDeviceManager(this);
+            graphics.IsFullScreen = true;
             Content.RootDirectory = "Content"; 
         }
 
@@ -43,8 +44,11 @@ namespace AsteRoider
             // TODO: Add your initialization logic here
             camera = new Camera(new Vector3(3.5f, 1.5f, 1.5f), 0, GraphicsDevice.Viewport.AspectRatio, 0.05f, 100f);
             effect = new BasicEffect(GraphicsDevice);
+            
             GraphicsDevice.SamplerStates[0] = SamplerState.LinearClamp;
-            background = new Background(GraphicsDevice);
+
+
+            background = new Background(GraphicsDevice, Content.Load<Texture2D>("textur"));
             base.Initialize();
         }
 
@@ -57,9 +61,7 @@ namespace AsteRoider
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             
-            ship = new Ship(
-this.GraphicsDevice,
-Content.Load<Texture2D>("textur"));
+            ship = new Ship(this.GraphicsDevice,Content.Load<Texture2D>("textur"));
 
             // TODO: use this.Content to load your game content here
         }

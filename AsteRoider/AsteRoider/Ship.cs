@@ -24,30 +24,48 @@ namespace AsteRoider
             device = graphicsdev;
             PositionCube(Vector3.Zero, 0.0f);
 
-            // Create the cube's vertical faces
             BuildFace(new Vector3(0, 0, 0), new Vector3(0, 1, 1));
-            BuildFace(new Vector3(0, 0, 1), new Vector3(1, 1, 1));
-            BuildFace(new Vector3(1, 0, 1), new Vector3(1, 1, 0));
-            BuildFace(new Vector3(1, 0, 0), new Vector3(0, 1, 0));
-            // Create the cube's horizontal faces
-            BuildFaceHorizontal(new Vector3(0, 1, 0), new Vector3(1, 1,
-            1));
-            BuildFaceHorizontal(new Vector3(0, 0, 1), new Vector3(1, 0,
-            0));
-            shipVertexBuffer = new VertexBuffer(
-            device,
-            VertexPositionTexture.VertexDeclaration,
-            vertices.Count,
-            BufferUsage.WriteOnly);
-            shipVertexBuffer.SetData<VertexPositionTexture>(
-            vertices.ToArray());
+
+            //bottom
+            //vertices.Add(BuildVertex(0, 1, 0, 1, 0));
+            //vertices.Add(BuildVertex(1, 1, 1, 0, 1));
+            //vertices.Add(BuildVertex(-1, 0, 0, 1, 1));
+
+            vertices.Add(BuildVertex(0, 1, 0, 0, 1));
+            vertices.Add(BuildVertex(1, 1, 0, 1, 1));
+            vertices.Add(BuildVertex(1, 1, 1, 1, 0));
+
+            ////top
+            //vertices.Add(BuildVertex(0, 0, 0, 0, 0));
+            //vertices.Add(BuildVertex(0, 0, 0, 0, 0));
+            //vertices.Add(BuildVertex(0, 0, 0, 0, 0));
+
+
+
+            // Create the cube's vertical faces
+            ////BuildFace(new Vector3(0, 0, 0), new Vector3(0, 1, 1));
+            ////BuildFace(new Vector3(0, 0, 1), new Vector3(1, 1, 1));
+            ////BuildFace(new Vector3(1, 0, 1), new Vector3(1, 1, 0));
+            ////BuildFace(new Vector3(1, 0, 0), new Vector3(0, 1, 0));
+            //// Create the cube's horizontal faces
+            //BuildFaceHorizontal(new Vector3(0, 1, 0), new Vector3(1, 1, 1));
+
+            //BuildFaceHorizontal(new Vector3(0, 0, 1), new Vector3(1, 0, 0));
+
+            shipVertexBuffer = new VertexBuffer(device,VertexPositionTexture.VertexDeclaration,vertices.Count,BufferUsage.WriteOnly);
+            shipVertexBuffer.SetData<VertexPositionTexture>(vertices.ToArray());
         }
 
         public void PositionCube(Vector3 playerLocation, float minDistance)
         {
             location = new Vector3(1.5f, 0.5f, 1.5f);
         }
-
+        private void BuildTripleFace(Vector3 p1, Vector3 p2, Vector3 p3) 
+        {
+            vertices.Add(BuildVertex(p1.X, p1.Y, p1.Z, 0, 1));
+            
+        }
+        
         private void BuildFaceHorizontal(Vector3 p1, Vector3 p2)
         {
             vertices.Add(BuildVertex(p1.X, p1.Y, p1.Z, 0, 1));
@@ -62,6 +80,7 @@ namespace AsteRoider
         {
             return new VertexPositionTexture(new Vector3(x1, y1, z1), new Vector2(x2, y2));
         }
+
 
         private void BuildFace(Vector3 p1, Vector3 p2)
         {
@@ -78,11 +97,11 @@ namespace AsteRoider
             effect.TextureEnabled = true;
             effect.Texture = texture;
             
-            Matrix center = Matrix.CreateTranslation(
-            new Vector3(-0.5f, -0.5f, -0.5f));
+            Matrix center = Matrix.CreateTranslation(new Vector3(-0.5f, -0.5f, -0.5f));
             Matrix scale = Matrix.CreateScale(0.5f);
             Matrix translate = Matrix.CreateTranslation(location);
             effect.World = center * scale * translate;
+
             effect.View = camera.View;
             effect.Projection = camera.Projection;
             foreach (EffectPass pass in effect.CurrentTechnique.Passes)
