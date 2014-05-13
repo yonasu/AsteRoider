@@ -29,7 +29,7 @@ namespace AsteRoider
         public AsteRoiderGame()
         {
             graphics = new GraphicsDeviceManager(this);
-            graphics.IsFullScreen = true;
+            //graphics.IsFullScreen = true;
             Content.RootDirectory = "Content"; 
         }
 
@@ -48,7 +48,7 @@ namespace AsteRoider
             GraphicsDevice.SamplerStates[0] = SamplerState.LinearClamp;
 
 
-            background = new Background(GraphicsDevice, Content.Load<Texture2D>("textur"));
+            background = new Background(GraphicsDevice, Content.Load<Texture2D>("bakgrund2"));
             base.Initialize();
         }
 
@@ -87,7 +87,7 @@ namespace AsteRoider
                 this.Exit();
             
             // TODO: Add your update logic here
-
+            ship.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
             base.Update(gameTime);
         }
 
@@ -98,7 +98,8 @@ namespace AsteRoider
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Gray);
-            //background.Draw(camera, effect);
+
+            background.Draw(camera, effect);
             ship.Draw(camera, effect);
             // TODO: Add your drawing code here
 

@@ -15,6 +15,9 @@ namespace AsteRoider
         private Vector3 location;
 
 
+        private float rotation = 0f;
+        private float zrotation = 0f;
+
         private VertexBuffer shipVertexBuffer;
         private List<VertexPositionTexture> vertices = new List<VertexPositionTexture>();
 
@@ -27,18 +30,35 @@ namespace AsteRoider
             BuildFace(new Vector3(0, 0, 0), new Vector3(0, 1, 1));
 
             //bottom
-            //vertices.Add(BuildVertex(0, 1, 0, 1, 0));
-            //vertices.Add(BuildVertex(1, 1, 1, 0, 1));
+            //one corner
+            //vertices.Add(BuildVertex(0, 0, 0, 0, 1));
             //vertices.Add(BuildVertex(-1, 0, 0, 1, 1));
+            //vertices.Add(BuildVertex(-0.5f, 1, 1, 1, 0));
+            
+            //vertices.Add(BuildVertex(0.5f, 1, 1, 1, 0));
+            //vertices.Add(BuildVertex(1, 0, 0, 1, 0));
+            //vertices.Add(BuildVertex(0, 0, 0, 0, 1));
 
-            vertices.Add(BuildVertex(0, 1, 0, 0, 1));
-            vertices.Add(BuildVertex(1, 1, 0, 1, 1));
-            vertices.Add(BuildVertex(1, 1, 1, 1, 0));
+            //vertices.Add(BuildVertex(-0.5f, 1, 1, 1, 0));
+            //vertices.Add(BuildVertex(0.5f, 1, 1, 1, 0));
+            //vertices.Add(BuildVertex(0, 0, 0, 0, 1));
 
-            ////top
-            //vertices.Add(BuildVertex(0, 0, 0, 0, 0));
-            //vertices.Add(BuildVertex(0, 0, 0, 0, 0));
-            //vertices.Add(BuildVertex(0, 0, 0, 0, 0));
+            //FAN TRIANGLE NOPE THERE IS NO FAN MOFO
+            vertices.Add(BuildVertex(0, 0, 0.25f, 0, 1));   // 4
+            vertices.Add(BuildVertex(1, -1, 0, 1, 0));  // 2
+            
+            vertices.Add(BuildVertex(-1, -1, 0, 1, 1)); // 3
+
+            vertices.Add(BuildVertex(0, 0, 0.25f, 0, 1));   // 4
+            vertices.Add(BuildVertex(-1, -1, 0, 1, 1)); // 3
+
+            vertices.Add(BuildVertex(0, 1, 0, 0, 0));  // 1
+            vertices.Add(BuildVertex(0, 0, 0.25f, 0, 1));   // 4
+            vertices.Add(BuildVertex(0, 1, 0, 0, 0));  // 1
+            vertices.Add(BuildVertex(1, -1, 0, 1, 0));  // 2
+            vertices.Add(BuildVertex(1, -1, 0, 1, 0));  // 2
+            vertices.Add(BuildVertex(0, 1, 0, 0, 0));  // 1
+            vertices.Add(BuildVertex(-1, -1, 0, 1, 1)); // 3
 
 
 
@@ -52,7 +72,7 @@ namespace AsteRoider
 
             //BuildFaceHorizontal(new Vector3(0, 0, 1), new Vector3(1, 0, 0));
 
-            shipVertexBuffer = new VertexBuffer(device,VertexPositionTexture.VertexDeclaration,vertices.Count,BufferUsage.WriteOnly);
+            shipVertexBuffer = new VertexBuffer(device, VertexPositionTexture.VertexDeclaration, vertices.Count, BufferUsage.WriteOnly);
             shipVertexBuffer.SetData<VertexPositionTexture>(vertices.ToArray());
         }
 
@@ -60,12 +80,14 @@ namespace AsteRoider
         {
             location = new Vector3(1.5f, 0.5f, 1.5f);
         }
-        private void BuildTripleFace(Vector3 p1, Vector3 p2, Vector3 p3) 
+        private void BuildTripleFace(Vector3 p1, Vector3 p2, Vector3 p3)
         {
             vertices.Add(BuildVertex(p1.X, p1.Y, p1.Z, 0, 1));
-            
+
         }
-        
+
+
+
         private void BuildFaceHorizontal(Vector3 p1, Vector3 p2)
         {
             vertices.Add(BuildVertex(p1.X, p1.Y, p1.Z, 0, 1));
@@ -96,30 +118,35 @@ namespace AsteRoider
             effect.VertexColorEnabled = false;
             effect.TextureEnabled = true;
             effect.Texture = texture;
-            
+
+            Matrix rot = Matrix.CreateRotationY(rotation);
+            Matrix zrot = Matrix.CreateRotationZ(rotation); 
+
             Matrix center = Matrix.CreateTranslation(new Vector3(-0.5f, -0.5f, -0.5f));
             Matrix scale = Matrix.CreateScale(0.5f);
             Matrix translate = Matrix.CreateTranslation(location);
-            effect.World = center * scale * translate;
+            effect.World = center * rot * zrot * scale * translate;
 
             effect.View = camera.View;
             effect.Projection = camera.Projection;
             foreach (EffectPass pass in effect.CurrentTechnique.Passes)
             {
                 pass.Apply();
-                
+
                 device.SetVertexBuffer(shipVertexBuffer);
                 device.DrawPrimitives(
                 PrimitiveType.TriangleList,
                 0,
                 shipVertexBuffer.VertexCount / 3);
-                
+
             }
         }
-        public void Update(float elapsedtime) 
+        public void Update(float elapsedtime)
         {
-
+        //    rotation = MathHelper.WrapAngle(rotation + 0.017f);
+        //    zrotation = MathHelper.WrapAngle(zrotation + 0.015f);
+            
         }
-    }   
+    }
 }
 //<><>
