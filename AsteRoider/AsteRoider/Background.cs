@@ -22,6 +22,7 @@ namespace AsteRoider
         public Background(GraphicsDevice device, Texture2D texture)
         {
             this.device = device;
+            device.SamplerStates[0] = SamplerState.LinearClamp;
             this.texture = texture;
             BuildFloorBuffer();
         }
@@ -75,12 +76,14 @@ namespace AsteRoider
             effect.Texture = texture;
             effect.World = Matrix.Identity;
             
+            device.SamplerStates[0] = SamplerState.LinearClamp;
 
             effect.View = camera.View;
             effect.Projection = camera.Projection;
             foreach (EffectPass pass in effect.CurrentTechnique.Passes)
             {
                 pass.Apply();
+              
                 device.SetVertexBuffer(floorBuffer);
                 device.DrawPrimitives(
                 PrimitiveType.TriangleList,

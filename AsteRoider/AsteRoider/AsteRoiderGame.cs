@@ -23,7 +23,7 @@ namespace AsteRoider
         Camera camera;
         Background background;
         BasicEffect effect;
-        
+        Effect effect2;
         private Ship ship;
 
         public AsteRoiderGame()
@@ -43,11 +43,8 @@ namespace AsteRoider
         {
             // TODO: Add your initialization logic here
             camera = new Camera(new Vector3(3.5f, 1.5f, 1.5f), 0, GraphicsDevice.Viewport.AspectRatio, 0.05f, 100f);
-            effect = new BasicEffect(GraphicsDevice);
-            
             GraphicsDevice.SamplerStates[0] = SamplerState.LinearClamp;
-
-
+            effect = new BasicEffect(GraphicsDevice);
             background = new Background(GraphicsDevice, Content.Load<Texture2D>("bakgrund2"));
             base.Initialize();
         }
@@ -62,7 +59,7 @@ namespace AsteRoider
             spriteBatch = new SpriteBatch(GraphicsDevice);
             
             ship = new Ship(this.GraphicsDevice,Content.Load<Texture2D>("textur"));
-
+            effect2 = Content.Load<Effect>(@"Effects/ShipEffect");
             // TODO: use this.Content to load your game content here
         }
 
@@ -100,7 +97,7 @@ namespace AsteRoider
             GraphicsDevice.Clear(Color.Gray);
 
             background.Draw(camera, effect);
-            ship.Draw(camera, effect);
+            ship.Draw(camera, effect2);
             // TODO: Add your drawing code here
 
             base.Draw(gameTime);
