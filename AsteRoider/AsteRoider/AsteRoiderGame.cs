@@ -42,7 +42,7 @@ namespace AsteRoider
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            camera = new Camera(new Vector3(3.5f, 1.5f, 1.5f), 0, GraphicsDevice.Viewport.AspectRatio, 0.05f, 100f);
+            camera = new Camera(new Vector3(4.5f, 1.5f, 3.5f), 0, GraphicsDevice.Viewport.AspectRatio, 0.05f, 100f);
             GraphicsDevice.SamplerStates[0] = SamplerState.LinearClamp;
             effect = new BasicEffect(GraphicsDevice);
             background = new Background(GraphicsDevice, Content.Load<Texture2D>("bakgrund2"));
@@ -58,7 +58,7 @@ namespace AsteRoider
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             
-            ship = new Ship(this.GraphicsDevice,Content.Load<Texture2D>("textur"));
+            ship = new Ship(this.GraphicsDevice, Content.Load<Texture2D>("textur"));
             effect2 = Content.Load<Effect>(@"Effects/ShipEffect");
             // TODO: use this.Content to load your game content here
         }

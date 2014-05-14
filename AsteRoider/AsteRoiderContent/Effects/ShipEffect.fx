@@ -1,21 +1,28 @@
 float4x4 World;
 float4x4 View;
 float4x4 Projection;
+float3 lightDirection;
+float4 lightColor;
+float lightBrightness;
 
+
+float4 ambientLightColor;
+float ambientLightLevel;
 // TODO: add effect parameters here.
-texture terrainTexture1;
-sampler2D textureSampler = sampler_state {
-Texture = (terrainTexture1);
+texture shipTexture1;
 
-AddressU = Clamp;
-AddressV = Clamp;
+sampler2D textureSampler = sampler_state {
+	Texture = (shipTexture1);
+
+	AddressU = Clamp;
+	AddressV = Clamp;
 };
 
 struct VertexShaderInput
 {
 	float4 Position : POSITION0;
 	float2 TextureCoordinate : TEXCOORD0;
-
+	float3 Normal : NORMAL0;
 	// TODO: add input channels such as texture
 	// coordinates and vertex colors here.
 };
@@ -23,7 +30,7 @@ struct VertexShaderInput
 struct VertexShaderOutput
 {
 	float4 Position : POSITION0;
-	
+	float4 LightingColor : COLOR0;
 	float2 TextureCoordinate : TEXCOORD0;
 
 	// TODO: add vertex shader outputs such as colors and texture
@@ -46,6 +53,11 @@ VertexShaderOutput VertexShaderFunction(VertexShaderInput input)
 	float4 viewPosition = mul(worldPosition, View);
 	output.Position = mul(viewPosition, Projection);
 	output.TextureCoordinate = input.TextureCoordinate;
+
+	float4 normal = normalize(mul(input.Normal, World));
+	float lightLevel = dot(normal, lightDirection);
+	output.LightingColor = saturate(lightColor * lightBrightness * lightLevel);
+
 	return output;
 
 
@@ -53,11 +65,11 @@ VertexShaderOutput VertexShaderFunction(VertexShaderInput input)
 
 float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 {
-	// TODO: add your pixel shader code here.
-
-	//return float4(1, 0, 0, 1);
-	
-	return tex2D(textureSampler, input.TextureCoordinate);
+	float4 pixelColor = tex2D(
+	textureSampler, input.TextureCoordinate);
+	pixelColor *= input.LightingColor;
+	pixelColor.a = 1.0;
+	return pixelColor;
 }
 
 technique MegaRenderManiacStreetStyle
