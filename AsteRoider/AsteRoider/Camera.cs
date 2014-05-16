@@ -81,5 +81,15 @@ namespace AsteRoider
 
         #endregion
 
+
+        internal void Update(float timeelapsed, Vector3 shipposition)
+        {
+            //MoveCamera(shipposition);
+        }
+        internal void MoveCamera(Vector3 target) 
+        {
+            position.X = target.X;
+            position.Z = target.Z;
+        }
     }
 }

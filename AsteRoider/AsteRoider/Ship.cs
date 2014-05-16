@@ -14,7 +14,7 @@ namespace AsteRoider
         private Texture2D texture;
         private Vector3 location;
 
-
+        public int id;
         private float rotation = 0f;
         private float zrotation = 0f;
 
@@ -69,8 +69,18 @@ namespace AsteRoider
 
         public void PositionShip(Vector3 playerLocation, float minDistance)
         {
-            location = new Vector3(1.5f, 0.5f, 1.5f);
+            Position = new Vector3(0,0,0);
         }
+
+        public Vector3 Position
+        {
+            get { return location; }
+            set
+            {
+                location = value;
+            }
+        }
+
         private void BuildTripleFace(Vector3 p1, Vector3 p2, Vector3 p3)
         {
             vertices.Add(BuildVertex(p1.X, p1.Y, p1.Z, 0, 1));
@@ -104,8 +114,8 @@ namespace AsteRoider
                 vertices[v2].Normal += triangleNormal;
                 vertices[v3].Normal += triangleNormal;
             }
-            for (int x = 0; x < vertices.Length; x++)
-                vertices[x].Normal.Normalize();
+            for (int x = 0; x < vertices.Length; x++) { vertices[x].Normal.Normalize(); }
+            
             shipVertexBuffer.SetData(vertices);
         }
         public void Draw(Camera camera, Effect effect)
@@ -113,10 +123,10 @@ namespace AsteRoider
             //vart skeppet befinner sig         
             Matrix rot = Matrix.CreateRotationY(rotation);
             Matrix zrot = Matrix.CreateRotationZ(rotation);
-            Matrix center = Matrix.CreateTranslation(new Vector3(-0.5f, -0.5f, -0.5f));
+            //Matrix center = Matrix.CreateTranslation(new Vector3(-0.5f, -0.5f, -0.5f));
             Matrix scale = Matrix.CreateScale(0.5f);
             Matrix translate = Matrix.CreateTranslation(location);
-            Matrix total = rot * center * scale * translate * zrot;
+            Matrix total = rot * scale * zrot * translate;
 
             //HLSL Grejjerna
             effect.CurrentTechnique = effect.Techniques["MegaRenderManiacStreetStyle"];
@@ -129,6 +139,8 @@ namespace AsteRoider
             effect.Parameters["lightDirection"].SetValue(lightDirection);
             effect.Parameters["lightColor"].SetValue(new Vector4(1, 1, 1, 1));
             effect.Parameters["lightBrightness"].SetValue(0.8f);
+            effect.Parameters["ambientLightLevel"].SetValue(0.01f);
+            effect.Parameters["ambientLightColor"].SetValue(new Vector4(1, 1, 1, 1));
             foreach (EffectPass pass in effect.CurrentTechnique.Passes)
             {
                 pass.Apply();
@@ -138,17 +150,18 @@ namespace AsteRoider
                 PrimitiveType.TriangleList, 0,
                 0,
                 shipVertexBuffer.VertexCount, 0, indexbuffer.IndexCount / 3);
-
             }
         }
 
         public void Update(float elapsedtime)
         {
-            rotation = MathHelper.WrapAngle(rotation + 0.017f);
-            zrotation = MathHelper.WrapAngle(zrotation + 0.015f);
-
+            float f = (float)new Random().NextDouble()*2;
+            
+            rotation = MathHelper.WrapAngle(rotation + (0.017f * f));
+            zrotation = MathHelper.WrapAngle(zrotation + (0.015f * f));
+            //location.X += f/100;
+            //location.Z += f / 100;
         }
-       
     }
 }
 //<><>

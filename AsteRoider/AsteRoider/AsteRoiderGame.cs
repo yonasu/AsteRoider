@@ -19,16 +19,19 @@ namespace AsteRoider
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-
         Camera camera;
         Background background;
         BasicEffect effect;
         Effect effect2;
-        private Ship ship;
+        //private Ship ship;
+        private Ship[] ships;
+        private const int NUMSHIPS = 3000;
 
         public AsteRoiderGame()
         {
             graphics = new GraphicsDeviceManager(this);
+            graphics.PreferredBackBufferHeight = 720;
+            graphics.PreferredBackBufferWidth = 1280;
             //graphics.IsFullScreen = true;
             Content.RootDirectory = "Content"; 
         }
@@ -42,7 +45,7 @@ namespace AsteRoider
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            camera = new Camera(new Vector3(4.5f, 1.5f, 3.5f), 0, GraphicsDevice.Viewport.AspectRatio, 0.05f, 100f);
+            camera = new Camera(new Vector3(10.5f, 1.5f, 10.5f), 0, GraphicsDevice.Viewport.AspectRatio, 0.05f, 100f);
             GraphicsDevice.SamplerStates[0] = SamplerState.LinearClamp;
             effect = new BasicEffect(GraphicsDevice);
             background = new Background(GraphicsDevice, Content.Load<Texture2D>("bakgrund2"));
@@ -57,8 +60,16 @@ namespace AsteRoider
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            
-            ship = new Ship(this.GraphicsDevice, Content.Load<Texture2D>("textur"));
+            ships = new Ship[NUMSHIPS];
+            Random rn = new Random();
+            for (int x = 0; x < NUMSHIPS; x++) 
+            {
+                ships[x] = new Ship(this.GraphicsDevice, Content.Load<Texture2D>("textur"));
+                ships[x].id = x;
+                ships[x].Position = new Vector3(((float)rn.NextDouble() * 10), 0, ((float)rn.NextDouble() * 10));
+            }
+
+                //ship = new Ship(this.GraphicsDevice, Content.Load<Texture2D>("textur"));
             effect2 = Content.Load<Effect>(@"Effects/ShipEffect");
             // TODO: use this.Content to load your game content here
         }
@@ -82,9 +93,14 @@ namespace AsteRoider
             // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
-            
+            //camera.Position.X
             // TODO: Add your update logic here
-            ship.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+            for (int x = 0; x < NUMSHIPS; x++)
+            {
+                ships[x].Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+            }
+            //ship.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+            camera.Update((float)gameTime.ElapsedGameTime.TotalSeconds, new Vector3(0,0,0));
             base.Update(gameTime);
         }
 
@@ -97,7 +113,11 @@ namespace AsteRoider
             GraphicsDevice.Clear(Color.Gray);
 
             background.Draw(camera, effect);
-            ship.Draw(camera, effect2);
+            for (int x = 0; x < NUMSHIPS; x++) 
+            {
+                ships[x].Draw(camera, effect2);
+            }
+            //ship.Draw(camera, effect2);
             // TODO: Add your drawing code here
 
             base.Draw(gameTime);

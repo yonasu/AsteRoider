@@ -8,6 +8,7 @@ float lightBrightness;
 
 float4 ambientLightColor;
 float ambientLightLevel;
+
 // TODO: add effect parameters here.
 texture shipTexture1;
 
@@ -40,14 +41,7 @@ struct VertexShaderOutput
 
 VertexShaderOutput VertexShaderFunction(VertexShaderInput input)
 {
-	/*  VertexShaderOutput output;
-
-	float4 worldPosition = mul(input.Position, World);
-	float4 viewPosition = mul(worldPosition, View);
-	output.Position = mul(viewPosition, Projection);
-	*/
-	// TODO: add your vertex shader code here.
-
+	
 	VertexShaderOutput output;
 	float4 worldPosition = mul(input.Position, World);
 	float4 viewPosition = mul(worldPosition, View);
@@ -59,8 +53,6 @@ VertexShaderOutput VertexShaderFunction(VertexShaderInput input)
 	output.LightingColor = saturate(lightColor * lightBrightness * lightLevel);
 
 	return output;
-
-
 }
 
 float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
@@ -68,6 +60,7 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 	float4 pixelColor = tex2D(
 	textureSampler, input.TextureCoordinate);
 	pixelColor *= input.LightingColor;
+	pixelColor += ambientLightColor * ambientLightLevel;
 	pixelColor.a = 1.0;
 	return pixelColor;
 }
