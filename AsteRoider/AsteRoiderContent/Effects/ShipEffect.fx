@@ -65,6 +65,13 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 	return pixelColor;
 }
 
+float4 PixelShaderCircle(VertexShaderOutput input) : COLOR0
+{
+	//float4 pixelColor = COLOR_WHITE;
+	//return float4(0.11,011,0.90,0.5);
+	return tex2D(textureSampler, input.TextureCoordinate);
+}
+
 technique MegaRenderManiacStreetStyle
 {
 	pass Pass1
@@ -74,4 +81,9 @@ technique MegaRenderManiacStreetStyle
 		VertexShader = compile vs_2_0 VertexShaderFunction();
 		PixelShader = compile ps_2_0 PixelShaderFunction();
 	}
+	/*pass Circle
+	{
+		PixelShader = compile ps_2_0 PixelShaderCircle();
+		
+	}*/
 }

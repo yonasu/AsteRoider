@@ -13,6 +13,7 @@ namespace AsteRoider
         private GraphicsDevice device;
         private Texture2D texture;
         private Vector3 location;
+        private Vector3 heading;
 
         public int id;
         private float rotation = 0f;
@@ -26,13 +27,31 @@ namespace AsteRoider
             this.texture = texture;
             device = graphicsdev;
             PositionShip(Vector3.Zero, 0.0f);
+            heading = new Vector3(0, 0, 0);
 
-            //FAN-TRIANGLE NOPE THERE IS NO FAN MOFO
+            //length of equilateral triangle side with a height of 1.
+            const float equiX = 1.154701f;
 
-            vertices.Add(BuildVertex(0, 1, 0, 0, 1));  // 1
-            vertices.Add(BuildVertex(1, -1, 0, 1, -1));  // 2
-            vertices.Add(BuildVertex(-1, -1, 0, -1, -1)); // 3
-            vertices.Add(BuildVertex(0, 0, 0.25f, 0, 0));   // 4
+            float BasexPos = 0;
+            float InternalxPos = 0;
+            for (int y = 4; y >= 0; y--)
+            {
+                for (int x = 5; (x - y) > 0; x--)
+                {
+                    vertices.Add(BuildVertex(BasexPos+InternalxPos, y, 0, 0, 1));  // 1
+                    InternalxPos += equiX;
+                }
+                BasexPos -= (equiX / 2);
+                InternalxPos = 0;
+            }
+            //      A       
+            //     / \      
+            //    / Y \     
+            //    -----     
+            //vertices.Add(BuildVertex(0, 1, 0, 0, 1));  // 1
+            //vertices.Add(BuildVertex(1, -1, 0, 1, -1));  // 2
+            //vertices.Add(BuildVertex(-1, -1, 0, -1, -1)); // 3
+            //vertices.Add(BuildVertex(0, 0, 0.25f, 0, 0));   // 4
 
 
             BuildIndexBuffer();
@@ -138,8 +157,8 @@ namespace AsteRoider
             lightDirection.Normalize();
             effect.Parameters["lightDirection"].SetValue(lightDirection);
             effect.Parameters["lightColor"].SetValue(new Vector4(1, 1, 1, 1));
-            effect.Parameters["lightBrightness"].SetValue(0.8f);
-            effect.Parameters["ambientLightLevel"].SetValue(0.01f);
+            effect.Parameters["lightBrightness"].SetValue(0.9f);
+            effect.Parameters["ambientLightLevel"].SetValue(0.005f);
             effect.Parameters["ambientLightColor"].SetValue(new Vector4(1, 1, 1, 1));
             foreach (EffectPass pass in effect.CurrentTechnique.Passes)
             {
@@ -155,12 +174,15 @@ namespace AsteRoider
 
         public void Update(float elapsedtime)
         {
-            float f = (float)new Random().NextDouble()*2;
-            
-            rotation = MathHelper.WrapAngle(rotation + (0.017f * f));
-            zrotation = MathHelper.WrapAngle(zrotation + (0.015f * f));
+            RotateShip();
             //location.X += f/100;
             //location.Z += f / 100;
+        }
+        private void RotateShip() 
+        {
+            float f = (float)new Random().NextDouble() * 2;
+            rotation = MathHelper.WrapAngle(rotation + (0.017f * f));
+            zrotation = MathHelper.WrapAngle(zrotation + (0.015f * f));
         }
     }
 }

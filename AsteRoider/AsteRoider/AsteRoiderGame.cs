@@ -25,7 +25,7 @@ namespace AsteRoider
         Effect effect2;
         //private Ship ship;
         private Ship[] ships;
-        private const int NUMSHIPS = 3000;
+        private const int NUMSHIPS = 1000;
 
         public AsteRoiderGame()
         {
